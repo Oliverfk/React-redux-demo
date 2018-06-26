@@ -1,15 +1,16 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import * as courseActions from '../../actions/courseActions';
+import {bindActionCreators} from "redux";
 
-class CoursesPage extends React.Component{
+class CoursesPage extends React.Component {
   constructor(props, context) {
-    super(props,context);
-
+    super(props, context);
+    //initialize state
     this.state = {
       course: {title: ""}
     };
-
+    //bind function
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onClickSave = this.onClickSave.bind(this);
   }
@@ -22,7 +23,7 @@ class CoursesPage extends React.Component{
   }
 
   onClickSave() {
-    this.props.dispatch(courseActions.createCourse(this.state.course));
+    this.props.actions.createCourse(this.state.course);
   }
 
   courseRow(course, index) {
@@ -30,8 +31,8 @@ class CoursesPage extends React.Component{
   }
 
 
-  render(){
-    return(
+  render() {
+    return (
       <div>
         <h1>Courses</h1>
         {this.props.courses.map(this.courseRow)}
@@ -43,10 +44,12 @@ class CoursesPage extends React.Component{
   }
 }
 
+//PropTypes: address linting errors
 CoursesPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  courses: PropTypes.array.isRequired
+  courses: PropTypes.array.isRequired,
+  actions: PropTypes.object.isRequired
 };
+
 
 function mapStateToProps(state, ownProps) {
   return {
@@ -54,5 +57,10 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-// export default connect(mapStateToProps) (CoursesPage);
-export default connect(mapStateToProps)(CoursesPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(courseActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
