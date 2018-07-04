@@ -64,6 +64,18 @@ class CourseApi {
     });
   }
 
+  static searchCourse(courseKeyWords) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const course = courses.filter(course => course.title.toLowerCase().trim().
+        includes(courseKeyWords.toLowerCase().trim()) || course.authorId.toLowerCase().trim().
+        includes(courseKeyWords.toLowerCase().trim()) || course.category.toLowerCase().trim().
+        includes(courseKeyWords.toLowerCase().trim()));
+        resolve(course);
+      }, delay);
+    });
+  }
+
   static saveCourse(course) {
     course = Object.assign({}, course); // to avoid manipulating object passed in.
     return new Promise((resolve, reject) => {
@@ -95,10 +107,12 @@ class CourseApi {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const indexOfCourseToDelete = courses.findIndex(course => {
-          course.id == courseId;
+          return course.id === courseId;
         });
-        courses.splice(indexOfCourseToDelete, 1);
-        resolve();
+        if (indexOfCourseToDelete != -1) {
+          courses.splice(indexOfCourseToDelete, 1);
+        }
+        resolve(Object.assign([], courses));
       }, delay);
     });
   }
